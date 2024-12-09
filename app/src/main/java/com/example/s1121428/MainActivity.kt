@@ -19,6 +19,7 @@ import com.example.s1121428.ui.theme.S1121428Theme
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,6 +30,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.sp
 
@@ -50,10 +52,28 @@ class MainActivity : ComponentActivity() {
 }
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
+    val colors = listOf(
+        Color(0xff95fe95) ,
+        Color(0xfffdca0f),
+        Color(0xfffea4a4),
+        Color(0xffa5dfed))
+    var colorIndex by remember { mutableStateOf(0) }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xff95fe95)),
+            .background(colors[colorIndex])
+            .pointerInput(Unit){
+                detectHorizontalDragGestures { change, dragAmount ->
+                    change.consume()
+                    if (dragAmount > 0){
+                        colorIndex = (colorIndex + 1) % colors.size
+                    }
+                    else if (dragAmount < 0){
+                        colorIndex = (colorIndex - 1 + colors.size) % colors.size
+                    }
+                }
+            }
     ){
         Column (
             modifier = Modifier.fillMaxSize(),
